@@ -1,10 +1,11 @@
-USE [UADEAnalytics];
+/*USE [UADEAnalytics];
 GO
 
 CREATE TABLE Comuna (
    idComuna INT PRIMARY KEY,
    nombre VARCHAR(80) NOT NULL UNIQUE
 );
+
 CREATE TABLE Barrio (
    idBarrio INT PRIMARY KEY,
    idComuna INT NOT NULL,
@@ -13,10 +14,12 @@ CREATE TABLE Barrio (
        REFERENCES Comuna(idComuna),
    CONSTRAINT UQ_Barrio_Comuna_Nombre UNIQUE (idComuna, nombre)
 );
+
 CREATE TABLE FranjaEtaria (
    idFranja INT PRIMARY KEY,
    descripcion VARCHAR(40) NOT NULL UNIQUE
 );
+
 CREATE TABLE Ciudadano (
    idCiudadano INT PRIMARY KEY,
    dni VARCHAR(12) NOT NULL UNIQUE,
@@ -29,11 +32,13 @@ CREATE TABLE Ciudadano (
    CONSTRAINT FK_Ciudadano_Barrio FOREIGN KEY (idBarrio)
        REFERENCES Barrio(idBarrio)
 );
+
 CREATE TABLE Interes (
    idInteres INT PRIMARY KEY,
    nombre VARCHAR(80) NOT NULL UNIQUE,
    categoria VARCHAR(50) NOT NULL
 );
+
 CREATE TABLE CiudadanoInteres (
    idCiudadano INT NOT NULL,
    idInteres INT NOT NULL,
@@ -70,6 +75,7 @@ CREATE TABLE AccionCampania (
        REFERENCES Interes(idInteres),
    CONSTRAINT CK_Accion_Presupuesto CHECK (presupuestoAsignado >= 0)
 );
+
 CREATE TABLE HistorialEncuesta (
    idHistorial INT IDENTITY(1,1) PRIMARY KEY,
    idEncuesta INT NOT NULL,
@@ -80,3 +86,5 @@ CREATE TABLE HistorialEncuesta (
    CONSTRAINT FK_Historial_Encuesta FOREIGN KEY (idEncuesta)
        REFERENCES Encuesta(idEncuesta)
 );
+*/
+
