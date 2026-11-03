@@ -1,0 +1,40 @@
+USE [UADEAnalytics]
+GO
+
+CREATE OR ALTER PROCEDURE sp_ActualizarInteres
+    @idInteres INT,
+    @nombre VARCHAR(80),
+    @categoria VARCHAR(50)
+AS
+BEGIN
+    BEGIN TRY
+
+        IF NOT EXISTS (SELECT 1 FROM Interes WHERE idInteres = @idInteres)
+        BEGIN
+            PRINT 'error: el interes indicado no existe';
+            RETURN;
+        END;
+
+        IF @nombre IS NULL OR @nombre = '' OR @categoria IS NULL OR @categoria = ''
+        BEGIN
+            PRINT 'error: el nombre y la categoria no pueden estar vacios';
+            RETURN;
+        END;
+
+        IF EXISTS (SELECT 1 FROM Interes WHERE nombre = @nombre AND idInteres <> @idInteres)
+        BEGIN
+            PRINT 'error: ya existe otro interes con ese nombre';
+            RETURN;
+        END;
+
+        UPDATE Interes SET nombre = @nombre,categoria = @categoria WHERE idInteres = @idInteres;
+        
+        PRINT 'interes actualizado';
+
+    END TRY
+    BEGIN CATCH
+        PRINT 'Error al actualizar el interes';
+        PRINT 'Mensaje de error: ' + ERROR_MESSAGE();
+        PRINT 'Codigo de error: ' + CAST(ERROR_NUMBER() AS VARCHAR);
+    END CATCH;
+END;
