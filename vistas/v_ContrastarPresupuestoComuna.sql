@@ -1,4 +1,4 @@
-CREATE VIEW v_ContrastarPresupuestoComuna AS
+CREATE OR ALTER VIEW v_ContrastarPresupuestoComuna AS
 SELECT 
     co.idComuna,
     co.nombre,

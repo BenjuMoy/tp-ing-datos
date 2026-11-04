@@ -1,4 +1,4 @@
-CREATE VIEW vw_ResumenIntencionVoto AS
+CREATE OR ALTER VIEW vw_ResumenIntencionVoto AS
 SELECT
     co.idComuna,
     co.nombre AS nombreComuna,
@@ -9,7 +9,7 @@ SELECT
 
 FROM Encuesta e
 INNER JOIN Ciudadano ci ON e.idCiudadano = ci.idCiudadano
-INNER JOIN Barrio ba ON ba.idBarrio = ci.idCiudadano
+INNER JOIN Barrio ba ON ba.idBarrio = ci.idBarrio
 INNER JOIN Comuna co ON ba.idComuna = co.idComuna
 INNER JOIN FranjaEtaria f on f.idFranja = ci.idFranja
 GROUP BY
