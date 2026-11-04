@@ -1,0 +1,15 @@
+EXEC dbo.sp_insertarComuna @idComuna = 1,  @nombre = 'Comuna 1';
+EXEC dbo.sp_insertarComuna @idComuna = 2,  @nombre = 'Comuna 2';
+EXEC dbo.sp_insertarComuna @idComuna = 3,  @nombre = 'Comuna 3';
+EXEC dbo.sp_insertarComuna @idComuna = 4,  @nombre = 'Comuna 4';
+EXEC dbo.sp_insertarComuna @idComuna = 5,  @nombre = 'Comuna 5';
+EXEC dbo.sp_insertarComuna @idComuna = 6,  @nombre = 'Comuna 6';
+EXEC dbo.sp_insertarComuna @idComuna = 7,  @nombre = 'Comuna 7';
+EXEC dbo.sp_insertarComuna @idComuna = 8,  @nombre = 'Comuna 8';
+EXEC dbo.sp_insertarComuna @idComuna = 9,  @nombre = 'Comuna 9';
+EXEC dbo.sp_insertarComuna @idComuna = 10, @nombre = 'Comuna 10';
+EXEC dbo.sp_insertarComuna @idComuna = 11, @nombre = 'Comuna 11';
+EXEC dbo.sp_insertarComuna @idComuna = 12, @nombre = 'Comuna 12';
+EXEC dbo.sp_insertarComuna @idComuna = 13, @nombre = 'Comuna 13';
+EXEC dbo.sp_insertarComuna @idComuna = 14, @nombre = 'Comuna 14';
+EXEC dbo.sp_insertarComuna @idComuna = 15, @nombre = 'Comuna 15';
