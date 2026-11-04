@@ -2,7 +2,6 @@ USE [UADEAnalytics]
 GO
 
 CREATE OR ALTER PROCEDURE sp_InsertarAccionCampania
-	@idAccion INT,
 	@idComuna INT,
 	@idInteresObjetivo INT,
 	@tipoAccion VARCHAR(60),
@@ -14,12 +13,6 @@ BEGIN
         IF @tipoAccion = ''
         BEGIN
             PRINT 'error: el tipo de accion no puede estar vacio';
-            RETURN;
-        END;
-
-        IF EXISTS (SELECT 1 FROM AccionCampania WHERE idAccion = @idAccion)
-        BEGIN
-            PRINT 'error: ya existe una accion con ese ID';
             RETURN;
         END;
 
@@ -42,9 +35,9 @@ BEGIN
         END;
 
         INSERT INTO AccionCampania
-        (idAccion, idComuna, idInteresObjetivo, tipoAccion, presupuestoAsignado)
+        (idComuna, idInteresObjetivo, tipoAccion, presupuestoAsignado)
         VALUES
-        (@idAccion, @idComuna, @idInteresObjetivo, @tipoAccion, @presupuestoAsignado);
+        ( @idComuna, @idInteresObjetivo, @tipoAccion, @presupuestoAsignado);
 
         PRINT 'Accion de campaña insertada';
 

@@ -1,4 +1,7 @@
-/*USE [UADEAnalytics];
+CREATE DATABASE UADEAnalytics
+GO
+
+USE [UADEAnalytics];
 GO
 
 CREATE TABLE Comuna (
@@ -21,7 +24,7 @@ CREATE TABLE FranjaEtaria (
 );
 
 CREATE TABLE Ciudadano (
-   idCiudadano INT PRIMARY KEY,
+   idCiudadano INT IDENTITY(1,1) PRIMARY KEY,
    dni VARCHAR(12) NOT NULL UNIQUE,
    nombreCompleto VARCHAR(120) NOT NULL,
    genero VARCHAR(30) NOT NULL,
@@ -52,7 +55,7 @@ CREATE TABLE CiudadanoInteres (
 );
 
 CREATE TABLE Encuesta (
-   idEncuesta INT PRIMARY KEY,
+   idEncuesta INT IDENTITY (1,1) PRIMARY KEY,
    idCiudadano INT NOT NULL,
    fechaEncuesta DATE NOT NULL,
    intencionVoto VARCHAR(80) NOT NULL,
@@ -64,7 +67,7 @@ CREATE TABLE Encuesta (
 );
 
 CREATE TABLE AccionCampania (
-   idAccion INT PRIMARY KEY,
+   idAccion INT IDENTITY(1,1) PRIMARY KEY,
    idComuna INT NOT NULL,
    idInteresObjetivo INT NOT NULL,
    tipoAccion VARCHAR(60) NOT NULL,
@@ -86,5 +89,5 @@ CREATE TABLE HistorialEncuesta (
    CONSTRAINT FK_Historial_Encuesta FOREIGN KEY (idEncuesta)
        REFERENCES Encuesta(idEncuesta)
 );
-*/
+
 

@@ -2,7 +2,6 @@ USE [UADEAnalytics];
 GO
 
 CREATE OR ALTER PROCEDURE sp_InsertarEncuesta
-    @idEncuesta INT,
     @idCiudadano INT,
     @fechaEncuesta DATE,
     @intencionVoto VARCHAR(80),
@@ -14,12 +13,6 @@ BEGIN
         IF @intencionVoto = ''
         BEGIN
             PRINT 'Error: la intencion de voto no puede estar vacia';
-            RETURN;
-        END;
-
-        IF EXISTS (SELECT 1 FROM Encuesta WHERE idEncuesta = @idEncuesta)
-        BEGIN
-            PRINT 'error: ya existe una encuesta con ese ID';
             RETURN;
         END;
 
@@ -35,8 +28,8 @@ BEGIN
             RETURN;
         END;
 
-        INSERT INTO Encuesta(idEncuesta, idCiudadano, fechaEncuesta, intencionVoto, probabilidadVoto)
-        VALUES(@idEncuesta, @idCiudadano, @fechaEncuesta, @intencionVoto, @probabilidadVoto);
+        INSERT INTO Encuesta( idCiudadano, fechaEncuesta, intencionVoto, probabilidadVoto)
+        VALUES(@idCiudadano, @fechaEncuesta, @intencionVoto, @probabilidadVoto);
 
         PRINT 'Encuesta insertada';
 

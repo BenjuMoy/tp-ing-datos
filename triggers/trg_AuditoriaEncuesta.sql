@@ -1,6 +1,8 @@
 
 CREATE TRIGGER trg_AuditoriaEncuesta
-ON Encuesta AFTER UPDATE AS
+ON Encuesta 
+AFTER UPDATE 
+AS
 BEGIN
     INSERT INTO HistorialEncuesta (idEncuesta, fechaCambio, operacion, valorAnterior, valorNuevo )
     SELECT

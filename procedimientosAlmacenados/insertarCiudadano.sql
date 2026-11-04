@@ -2,7 +2,6 @@ USE [UADEAnalytics];
 GO
 
 CREATE OR ALTER PROCEDURE sp_InsertarCiudadano
-    @idCiudadano INT,
     @dni VARCHAR(12),
     @nombreCompleto VARCHAR(120),
     @genero VARCHAR(30),
@@ -15,12 +14,6 @@ BEGIN
         IF @dni = '' OR @nombreCompleto = '' OR @genero = ''
         BEGIN
             PRINT 'Error: los datos del ciudadano no pueden estar vacios';
-            RETURN;
-        END;
-
-        IF EXISTS (SELECT 1 FROM Ciudadano WHERE idCiudadano = @idCiudadano)
-        BEGIN
-            PRINT 'Error: ya existe un ciudadano con ese ID';
             RETURN;
         END;
 
@@ -43,9 +36,9 @@ BEGIN
         END;
 
         INSERT INTO Ciudadano
-        (idCiudadano, dni, nombreCompleto, genero, idFranja, idBarrio)
+        (dni, nombreCompleto, genero, idFranja, idBarrio)
         VALUES
-        (@idCiudadano, @dni, @nombreCompleto, @genero, @idFranja, @idBarrio);
+        (@dni, @nombreCompleto, @genero, @idFranja, @idBarrio);
 
         PRINT 'Ciudadan insertado correctamente';
 
