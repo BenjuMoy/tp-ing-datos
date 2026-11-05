@@ -91,3 +91,18 @@ WHERE e.intencionVoto IN ('Indeciso', 'Voto en Blanco') OR e.probabilidadVoto<50
 GROUP BY c.idComuna, c.nombre
 ORDER BY CantidadIndecisos DESC
 
+--Consulta 7
+SELECT
+    i.nombre AS Tema,
+    i.categoria AS Categoria,
+    COUNT(ci.idCiudadano) AS VotantesFieles
+
+FROM Encuesta e
+INNER JOIN Ciudadano ci ON Ci.idCiudadano = e.idCiudadano
+INNER JOIN CiudadanoInteres ciI ON ciI.idCiudadano = ci.idCiudadano
+INNER JOIN Interes i ON ciI.idInteres = i.idInteres
+WHERE e.intencionVoto = 'Alianza Innovadora' AND e.probabilidadVoto >= 80 AND ciI.nivelPrioridad >= 4 
+GROUP BY i.nombre, i.categoria
+ORDER BY VotantesFieles DESC
+
+
