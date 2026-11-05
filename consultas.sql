@@ -52,7 +52,7 @@ SELECT
     ci.genero,
     e.intencionVoto,
     COUNT(e.idEncuesta) AS CantidadVotantes,
-    CAST(AVG(e.probabilidadVoto) AS DECIMAL (5,2))AS GradoDeConviccionPromedio
+    CAST(AVG(CAST(e.probabilidadVoto AS DECIMAL (5,2))) AS DECIMAL(5,2)) AS GradoDeConviccionPromedio
 
 FROM Ciudadano ci
 INNER JOIN FranjaEtaria fa ON ci.idFranja = fa.idFranja
@@ -66,7 +66,7 @@ SELECT
     c.nombre AS Comuna,
     e.intencionVoto AS Partido,
     COUNT(e.idEncuesta) AS Votos,
-    CAST(AVG(e.probabilidadVoto)AS DECIMAL(5,2)) AS GradoDeConviccionPromedio
+    CAST(AVG (CAST (e.probabilidadVoto AS DECIMAL(5,2))) AS DECIMAL (5,2)) AS GradoDeConviccionPromedio
     
 
 FROM Ciudadano ci
@@ -81,7 +81,7 @@ ORDER BY c.idComuna ASC, votos DESC
 SELECT
     c.nombre,
     COUNT(ci.idCiudadano) AS CantidadIndecisos,
-    CAST(AVG(e.probabilidadVoto) AS DECIMAL(5,2)) AS GradoDeConviccionPromedio
+    CAST(AVG(CAST(e.probabilidadVoto AS DECIMAL(5,2))) AS DECIMAL (5,2)) AS GradoDeConviccionPromedio
 
 FROM Comuna C
 INNER JOIN Barrio b ON c.idComuna = b.idComuna
@@ -106,3 +106,44 @@ GROUP BY i.nombre, i.categoria
 ORDER BY VotantesFieles DESC
 
 
+--Consulta 8
+SELECT
+    e.intencionVoto AS Partido,
+    i.nombre AS TematicaMasReclamada,
+    i.categoria AS Categoria,
+    COUNT(ci.idCiudadano) AS CantidadCiudadanos,
+   CAST(AVG(CAST(ciI.nivelPrioridad AS DECIMAL(5,2))) AS DECIMAL(5,2)) AS PromedioNivelPrioridad
+
+FROM Encuesta e
+INNER JOIN Ciudadano ci ON e.idCiudadano = ci.idCiudadano
+INNER JOIN CiudadanoInteres ciI ON ci.idCiudadano = ciI.idCiudadano
+INNER JOIN Interes i ON ciI.idInteres = i.idInteres
+GROUP BY e.intencionVoto, i.nombre, i.categoria
+ORDER BY e.intencionVoto ASC, CantidadCiudadanos DESC;
+
+ 
+--Consulta 9
+SELECT
+    fa.descripcion AS FranjaEtaria,
+    COUNT(ci.idCiudadano) AS VotantesACaptar,
+    CAST(AVG(CAST(e.probabilidadVoto AS DECIMAL(5,2))) AS DECIMAL(5,2)) AS GradoDeConviccionPromedio
+
+
+FROM FranjaEtaria fa
+INNER JOIN Ciudadano ci ON fa.idFranja = ci.idFranja
+INNER JOIN Encuesta e ON ci.idCiudadano = e.idCiudadano
+WHERE e.intencionVoto = 'Indeciso' OR e.probabilidadVoto < 50
+GROUP BY fa.idFranja, fa.descripcion
+ORDER BY VotantesACaptar DESC;
+
+ --Consulta 10
+SELECT 
+    i.nombre AS Tematica,
+    i.categoria AS Categoria,
+    COUNT(ci_int.idCiudadano) AS TotalInteresadosCiudad,
+    AVG(CAST(ci_int.nivelPrioridad AS DECIMAL(5,2))) AS PromedioNivelPrioridad
+
+FROM Interes i
+JOIN CiudadanoInteres ci_int ON i.idInteres = ci_int.idInteres
+GROUP BY i.idInteres, i.nombre, i.categoria
+ORDER BY TotalInteresadosCiudad DESC, PromedioNivelPrioridad DESC;
