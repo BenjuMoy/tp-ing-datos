@@ -19,14 +19,8 @@ SELECT
     COALESCE(CAST(SUM(v.totalEncuestas * v.promedioProbabilidad) / SUM(v.totalEncuestas) AS DECIMAL(5,2)), 0.00) AS GradoDeConviccionPromedio
     
 FROM v_ContrastarPresupuestoComuna p
-LEFT JOIN vw_ResumenIntencionVoto v 
-    ON p.idComuna = v.idComuna 
-   AND v.intencionVoto = 'Alianza Innovadora'
-GROUP BY 
-    p.idComuna, 
-    p.nombre, 
-    p.totalPresupuesto, 
-    p.TotalAcciones
+LEFT JOIN vw_ResumenIntencionVoto v ON p.idComuna = v.idComuna AND v.intencionVoto = 'Alianza Innovadora'
+GROUP BY p.idComuna, p.nombre, p.totalPresupuesto, p.TotalAcciones
 ORDER BY p.totalPresupuesto DESC;
 
 /*Consulta3*/
@@ -35,14 +29,14 @@ SELECT
     fa.descripcion AS FranjaEtaria,
     i.nombre AS InteresReclamado,
     i.categoria AS categoria,
-    COUNT(ci.idCiudadano) CantidadSolicitantes,
+    COUNT(ci.idCiudadano) AS CantidadSolicitantes,
     CAST(AVG(CAST(ciI.nivelPrioridad AS DECIMAL(5,2))) AS DECIMAL(5,2)) AS PrioridadPromediada
 
 FROM FranjaEtaria Fa
 INNER JOIN Ciudadano ci ON Fa.idFranja = ci.idFranja
 INNER JOIN CiudadanoInteres ciI ON ci.idCiudadano = ciI.idCiudadano
 INNER JOIN Interes i ON ciI.idInteres = i.idInteres
-GROUP BY fa.descripcion, i.nombre, i.categoria
+GROUP BY fa.idFranja, fa.descripcion, i.idInteres ,i.nombre, i.categoria
 ORDER BY fa.descripcion, COUNT(ci.idCiudadano) DESC
 
 
@@ -57,8 +51,8 @@ SELECT
 FROM Ciudadano ci
 INNER JOIN FranjaEtaria fa ON ci.idFranja = fa.idFranja
 INNER JOIN Encuesta e ON e.idCiudadano = ci.idCiudadano
-GROUP BY fa.descripcion, ci.genero, e.intencionVoto
-ORDER BY fa.descripcion, ci.genero, e.intencionVoto ASC
+GROUP BY fa.idFranja, fa.descripcion, ci.genero, e.intencionVoto
+ORDER BY fa.descripcion ASC, ci.genero ASC, e.intencionVoto ASC
 
 
 /*Consulta 5*/
@@ -83,7 +77,7 @@ SELECT
     COUNT(ci.idCiudadano) AS CantidadIndecisos,
     CAST(AVG(CAST(e.probabilidadVoto AS DECIMAL(5,2))) AS DECIMAL (5,2)) AS GradoDeConviccionPromedio
 
-FROM Comuna C
+FROM Comuna c
 INNER JOIN Barrio b ON c.idComuna = b.idComuna
 INNER JOIN Ciudadano ci ON b.idBarrio = ci.idBarrio
 INNER JOIN Encuesta e ON e.idCiudadano = ci.idCiudadano
@@ -98,7 +92,7 @@ SELECT
     COUNT(ci.idCiudadano) AS VotantesFieles
 
 FROM Encuesta e
-INNER JOIN Ciudadano ci ON Ci.idCiudadano = e.idCiudadano
+INNER JOIN Ciudadano ci ON ci.idCiudadano = e.idCiudadano
 INNER JOIN CiudadanoInteres ciI ON ciI.idCiudadano = ci.idCiudadano
 INNER JOIN Interes i ON ciI.idInteres = i.idInteres
 WHERE e.intencionVoto = 'Alianza Innovadora' AND e.probabilidadVoto >= 80 AND ciI.nivelPrioridad >= 4 
@@ -118,7 +112,7 @@ FROM Encuesta e
 INNER JOIN Ciudadano ci ON e.idCiudadano = ci.idCiudadano
 INNER JOIN CiudadanoInteres ciI ON ci.idCiudadano = ciI.idCiudadano
 INNER JOIN Interes i ON ciI.idInteres = i.idInteres
-GROUP BY e.intencionVoto, i.nombre, i.categoria
+GROUP BY e.intencionVoto, i.idInteres ,i.nombre, i.categoria
 ORDER BY e.intencionVoto ASC, CantidadCiudadanos DESC;
 
  
