@@ -3,7 +3,7 @@ SELECT
     nombreComuna AS Comuna,
     intencionVoto,
     SUM(totalEncuestas) AS TotalVotos,
-    CAST(SUM(totalEncuestas * promedioProbabilidad)/SUM(totalEncuestas) AS DECIMAL(5,2)) AS ProbabilidadPonderada
+    CAST(SUM(totalEncuestas * promedioProbabilidad)/SUM(totalEncuestas) AS DECIMAL(5,2)) AS GradoDeConviccionPromedio
 
 FROM vw_ResumenIntencionVoto
 GROUP BY idComuna, nombreComuna, intencionVoto
@@ -16,7 +16,7 @@ SELECT
     p.totalPresupuesto,
     p.TotalAcciones,
     COALESCE(SUM(v.totalEncuestas), 0) AS CantidadVotantesAlianza,
-    COALESCE(CAST(SUM(v.totalEncuestas * v.promedioProbabilidad) / SUM(v.totalEncuestas) AS DECIMAL(5,2)), 0.00) AS ProbabilidadPonderadaAlianza
+    COALESCE(CAST(SUM(v.totalEncuestas * v.promedioProbabilidad) / SUM(v.totalEncuestas) AS DECIMAL(5,2)), 0.00) AS GradoDeConviccionPromedio
     
 FROM v_ContrastarPresupuestoComuna p
 LEFT JOIN vw_ResumenIntencionVoto v 
@@ -47,4 +47,47 @@ ORDER BY fa.descripcion, COUNT(ci.idCiudadano) DESC
 
 
 /*Consulta 4*/
+SELECT
+    fa.descripcion,
+    ci.genero,
+    e.intencionVoto,
+    COUNT(e.idEncuesta) AS CantidadVotantes,
+    CAST(AVG(e.probabilidadVoto) AS DECIMAL (5,2))AS GradoDeConviccionPromedio
+
+FROM Ciudadano ci
+INNER JOIN FranjaEtaria fa ON ci.idFranja = fa.idFranja
+INNER JOIN Encuesta e ON e.idCiudadano = ci.idCiudadano
+GROUP BY fa.descripcion, ci.genero, e.intencionVoto
+ORDER BY fa.descripcion, ci.genero, e.intencionVoto ASC
+
+
+/*Consulta 5*/
+SELECT
+    c.nombre AS Comuna,
+    e.intencionVoto AS Partido,
+    COUNT(e.idEncuesta) AS Votos,
+    CAST(AVG(e.probabilidadVoto)AS DECIMAL(5,2)) AS GradoDeConviccionPromedio
+    
+
+FROM Ciudadano ci
+INNER JOIN Encuesta e ON ci.idCiudadano = e.idCiudadano
+INNER JOIN Barrio b ON b.idBarrio = ci.idBarrio
+INNER JOIN Comuna c ON c.idComuna = b.idComuna
+GROUP BY c.idComuna, c.nombre, e.intencionVoto
+ORDER BY c.idComuna ASC, votos DESC
+
+
+--Consulta 6
+SELECT
+    c.nombre,
+    COUNT(ci.idCiudadano) AS CantidadIndecisos,
+    CAST(AVG(e.probabilidadVoto) AS DECIMAL(5,2)) AS GradoDeConviccionPromedio
+
+FROM Comuna C
+INNER JOIN Barrio b ON c.idComuna = b.idComuna
+INNER JOIN Ciudadano ci ON b.idBarrio = ci.idBarrio
+INNER JOIN Encuesta e ON e.idCiudadano = ci.idCiudadano
+WHERE e.intencionVoto IN ('Indeciso', 'Voto en Blanco') OR e.probabilidadVoto<50
+GROUP BY c.idComuna, c.nombre
+ORDER BY CantidadIndecisos DESC
 
