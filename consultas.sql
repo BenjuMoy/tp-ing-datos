@@ -28,3 +28,23 @@ GROUP BY
     p.totalPresupuesto, 
     p.TotalAcciones
 ORDER BY p.totalPresupuesto DESC;
+
+/*Consulta3*/
+
+SELECT
+    fa.descripcion AS FranjaEtaria,
+    i.nombre AS InteresReclamado,
+    i.categoria AS categoria,
+    COUNT(ci.idCiudadano) CantidadSolicitantes,
+    CAST(AVG(CAST(ciI.nivelPrioridad AS DECIMAL(5,2))) AS DECIMAL(5,2)) AS PrioridadPromediada
+
+FROM FranjaEtaria Fa
+INNER JOIN Ciudadano ci ON Fa.idFranja = ci.idFranja
+INNER JOIN CiudadanoInteres ciI ON ci.idCiudadano = ciI.idCiudadano
+INNER JOIN Interes i ON ciI.idInteres = i.idInteres
+GROUP BY fa.descripcion, i.nombre, i.categoria
+ORDER BY fa.descripcion, COUNT(ci.idCiudadano) DESC
+
+
+/*Consulta 4*/
+
