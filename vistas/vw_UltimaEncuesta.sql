@@ -1,24 +1,20 @@
--- Una sola fila por ciudadano: su encuesta mas reciente.
--- Se usa en los reportes para contar votantes (y no encuestas).
--- Debe crearse antes que las demas vistas, la funcion y las consultas.
 CREATE OR ALTER VIEW vw_UltimaEncuesta AS
 SELECT
     t.idEncuesta,
     t.idCiudadano,
     t.fechaEncuesta,
-    t.idOpcionVoto,
-    o.nombre AS intencionVoto,
-    o.esPartido,
-    o.esPartidoPropio,
-    t.probabilidadVoto
+    t.intencionVoto,
+    t.probabilidadVoto,
+  
+    CAST(CASE WHEN t.intencionVoto IN ('Indeciso', 'Voto en Blanco') THEN 1 ELSE 0 END AS BIT) AS esIndeciso,
+    CAST(CASE WHEN t.intencionVoto = 'Alianza Innovadora' THEN 1 ELSE 0 END AS BIT) AS esPartidoPropio
 FROM (
     SELECT
         e.*,
-        ROW_NUMBER() OVER (
-            PARTITION BY e.idCiudadano
-            ORDER BY e.fechaEncuesta DESC, e.idEncuesta DESC  -- desempate: la ultima cargada
+        ROW_NUMBER() OVER ( 
+            PARTITION BY e.idCiudadano 
+            ORDER BY e.fechaEncuesta DESC, e.idEncuesta DESC
         ) AS nro
     FROM Encuesta e
 ) t
-INNER JOIN OpcionVoto o ON o.idOpcionVoto = t.idOpcionVoto
-WHERE t.nro = 1
+WHERE t.nro = 1;

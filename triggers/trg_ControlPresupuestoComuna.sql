@@ -6,8 +6,6 @@ AS
 BEGIN
 
     IF EXISTS(
-        -- Se suma la tabla completa de cada comuna afectada (sin cruzar con inserted,
-        -- para que un INSERT de varias filas no multiplique el total)
         SELECT 1
         FROM AccionCampania ac
         WHERE ac.idComuna IN (SELECT DISTINCT idComuna FROM inserted)

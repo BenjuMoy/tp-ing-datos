@@ -1,3 +1,4 @@
+/*
 CREATE DATABASE UADEAnalytics
 GO
 
@@ -64,7 +65,6 @@ CREATE TABLE Encuesta (
    probabilidadVoto DECIMAL(5,2) NOT NULL,
    CONSTRAINT FK_Encuesta_Ciudadano FOREIGN KEY (idCiudadano)
         REFERENCES Ciudadano(idCiudadano),
-   -- Relacion 1:1 con Ciudadano (segun el modelo conceptual): una encuesta por ciudadano
    CONSTRAINT UQ_Encuesta_Ciudadano UNIQUE (idCiudadano),
    CONSTRAINT CK_Encuesta_Intencion
        CHECK (intencionVoto IN ('Alianza Innovadora', 'Frente Ciudadano', 'Movimiento Evolución',
@@ -98,3 +98,4 @@ CREATE TABLE HistorialEncuesta (
 );
 
 
+*/
