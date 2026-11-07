@@ -1,3 +1,5 @@
+USE UADEAnalytics
+GO;
 
 CREATE OR ALTER TRIGGER trg_ControlPresupuestoComuna
 ON AccionCampania

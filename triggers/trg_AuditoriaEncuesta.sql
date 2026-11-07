@@ -1,3 +1,6 @@
+USE UADEAnalytics
+GO;
+
 CREATE OR ALTER TRIGGER trg_AuditoriaEncuesta
 ON Encuesta 
 AFTER UPDATE 

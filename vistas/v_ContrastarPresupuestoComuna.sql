@@ -1,3 +1,6 @@
+USE UADEAnalytics
+GO;
+
 CREATE OR ALTER VIEW vw_ContrastarPresupuestoComuna AS
 SELECT
     co.idComuna,

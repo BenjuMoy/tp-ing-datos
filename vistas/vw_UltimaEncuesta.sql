@@ -1,3 +1,6 @@
+USE UADEAnalytics
+Go;
+
 CREATE OR ALTER VIEW vw_UltimaEncuesta AS
 SELECT
     t.idEncuesta,
