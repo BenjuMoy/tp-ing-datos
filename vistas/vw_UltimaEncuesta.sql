@@ -10,6 +10,9 @@ SELECT
     o.nombre AS intencionVoto,
     o.esPartido,
     o.esPartidoPropio,
+    -- Definicion unica de "indeciso" para todos los reportes: no eligio ningun partido
+    -- (Indeciso o Voto en Blanco). Si cambia el criterio, se cambia solo aca.
+    CAST(CASE WHEN o.esPartido = 0 THEN 1 ELSE 0 END AS BIT) AS esIndeciso,
     t.probabilidadVoto
 FROM (
     SELECT

@@ -81,7 +81,7 @@ FROM Comuna c
 INNER JOIN Barrio b ON c.idComuna = b.idComuna
 INNER JOIN Ciudadano ci ON b.idBarrio = ci.idBarrio
 INNER JOIN vw_UltimaEncuesta e ON e.idCiudadano = ci.idCiudadano
-WHERE e.esPartido = 0 OR e.probabilidadVoto<50
+WHERE e.esIndeciso = 1
 GROUP BY c.idComuna, c.nombre
 ORDER BY CantidadIndecisos DESC
 
@@ -126,7 +126,7 @@ SELECT
 FROM FranjaEtaria fa
 INNER JOIN Ciudadano ci ON fa.idFranja = ci.idFranja
 INNER JOIN vw_UltimaEncuesta e ON ci.idCiudadano = e.idCiudadano
-WHERE e.intencionVoto = 'Indeciso' OR e.probabilidadVoto < 50
+WHERE e.esIndeciso = 1
 GROUP BY fa.idFranja, fa.descripcion
 ORDER BY VotantesACaptar DESC;
 
