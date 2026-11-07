@@ -54,14 +54,31 @@ CREATE TABLE CiudadanoInteres (
    CONSTRAINT CK_CI_Prioridad CHECK (nivelPrioridad BETWEEN 1 AND 5)
 );
 
+-- Opciones posibles de respuesta en una encuesta.
+-- esPartido = 0 para respuestas que no son un partido (Indeciso, Voto en Blanco).
+-- esPartidoPropio = 1 marca el partido para el que trabaja la campania (solo uno).
+CREATE TABLE OpcionVoto (
+   idOpcionVoto INT PRIMARY KEY,
+   nombre VARCHAR(80) NOT NULL UNIQUE,
+   esPartido BIT NOT NULL,
+   esPartidoPropio BIT NOT NULL DEFAULT 0,
+   CONSTRAINT CK_OpcionVoto_Propio CHECK (esPartidoPropio = 0 OR esPartido = 1)
+);
+
+-- Garantiza que haya un unico partido propio
+CREATE UNIQUE INDEX UQ_OpcionVoto_PartidoPropio
+   ON OpcionVoto(esPartidoPropio) WHERE esPartidoPropio = 1;
+
 CREATE TABLE Encuesta (
    idEncuesta INT IDENTITY (1,1) PRIMARY KEY,
    idCiudadano INT NOT NULL,
    fechaEncuesta DATE NOT NULL,
-   intencionVoto VARCHAR(80) NOT NULL,
+   idOpcionVoto INT NOT NULL,
    probabilidadVoto DECIMAL(5,2) NOT NULL,
    CONSTRAINT FK_Encuesta_Ciudadano FOREIGN KEY (idCiudadano)
         REFERENCES Ciudadano(idCiudadano),
+   CONSTRAINT FK_Encuesta_OpcionVoto FOREIGN KEY (idOpcionVoto)
+        REFERENCES OpcionVoto(idOpcionVoto),
    CONSTRAINT CK_Encuesta_Probabilidad
        CHECK (probabilidadVoto BETWEEN 0 AND 100)
 );

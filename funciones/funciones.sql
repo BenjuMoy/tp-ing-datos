@@ -31,7 +31,7 @@ RETURN
         ON ci.idCiudadano = c.idCiudadano
     INNER JOIN Interes i
         ON i.idInteres = ci.idInteres
-    INNER JOIN Encuesta e
+    INNER JOIN vw_UltimaEncuesta e
         ON e.idCiudadano = c.idCiudadano
     WHERE co.idComuna = @idComuna
       AND i.idInteres = @idInteres

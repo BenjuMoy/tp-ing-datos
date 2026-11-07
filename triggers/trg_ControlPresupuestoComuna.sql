@@ -1,15 +1,17 @@
 
-CREATE TRIGGER trg_ControlPresupuestoComuna
+CREATE OR ALTER TRIGGER trg_ControlPresupuestoComuna
 ON AccionCampania
 AFTER INSERT, UPDATE
 AS
 BEGIN
 
     IF EXISTS(
+        -- Se suma la tabla completa de cada comuna afectada (sin cruzar con inserted,
+        -- para que un INSERT de varias filas no multiplique el total)
         SELECT 1
-        FROM inserted i
-        JOIN AccionCampania ac ON i.idComuna = ac.idComuna
-        GROUP BY i.idComuna
+        FROM AccionCampania ac
+        WHERE ac.idComuna IN (SELECT DISTINCT idComuna FROM inserted)
+        GROUP BY ac.idComuna
         HAVING SUM(ac.presupuestoAsignado) > 10000000.00 
     )
     BEGIN

@@ -4,15 +4,15 @@ GO
 CREATE OR ALTER PROCEDURE sp_InsertarEncuesta
     @idCiudadano INT,
     @fechaEncuesta DATE,
-    @intencionVoto VARCHAR(80),
+    @idOpcionVoto INT,
     @probabilidadVoto DECIMAL(5,2)
 AS
 BEGIN
     BEGIN TRY
 
-        IF @intencionVoto = ''
+        IF NOT EXISTS (SELECT 1 FROM OpcionVoto WHERE idOpcionVoto = @idOpcionVoto)
         BEGIN
-            PRINT 'Error: la intencion de voto no puede estar vacia';
+            PRINT 'Error: la opcion de voto indicada no existe';
             RETURN;
         END;
 
@@ -28,8 +28,8 @@ BEGIN
             RETURN;
         END;
 
-        INSERT INTO Encuesta( idCiudadano, fechaEncuesta, intencionVoto, probabilidadVoto)
-        VALUES(@idCiudadano, @fechaEncuesta, @intencionVoto, @probabilidadVoto);
+        INSERT INTO Encuesta( idCiudadano, fechaEncuesta, idOpcionVoto, probabilidadVoto)
+        VALUES(@idCiudadano, @fechaEncuesta, @idOpcionVoto, @probabilidadVoto);
 
         PRINT 'Encuesta insertada';
 

@@ -4,10 +4,11 @@ SELECT
     co.nombre AS nombreComuna,
     f.descripcion AS FranjaEtaria,
     e.intencionVoto,
+    e.esPartidoPropio,
     COUNT (e.idEncuesta) AS totalEncuestas,
     AVG(e.probabilidadVoto) AS promedioProbabilidad
 
-FROM Encuesta e
+FROM vw_UltimaEncuesta e
 INNER JOIN Ciudadano ci ON e.idCiudadano = ci.idCiudadano
 INNER JOIN Barrio ba ON ba.idBarrio = ci.idBarrio
 INNER JOIN Comuna co ON ba.idComuna = co.idComuna
@@ -16,4 +17,5 @@ GROUP BY
     co.idComuna,
     co.nombre,
     f.descripcion,
-    e.intencionVoto
+    e.intencionVoto,
+    e.esPartidoPropio
