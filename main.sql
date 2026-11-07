@@ -1,4 +1,3 @@
-/*
 CREATE DATABASE UADEAnalytics
 GO
 
@@ -97,5 +96,3 @@ CREATE TABLE HistorialEncuesta (
        REFERENCES Encuesta(idEncuesta)
 );
 
-
-*/
