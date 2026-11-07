@@ -9,7 +9,7 @@ SELECT
     AVG(e.probabilidadVoto) AS promedioProbabilidad
 
 FROM vw_UltimaEncuesta e
-INNER JOIN Ciudadano ci ON e.idCiudadano = ci.idCiudadano
+INNER JOIN vw_Ciudadano ci ON e.idCiudadano = ci.idCiudadano
 INNER JOIN Barrio ba ON ba.idBarrio = ci.idBarrio
 INNER JOIN Comuna co ON ba.idComuna = co.idComuna
 INNER JOIN FranjaEtaria f on f.idFranja = ci.idFranja

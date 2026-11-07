@@ -5,7 +5,7 @@ CREATE OR ALTER PROCEDURE sp_InsertarCiudadano
     @dni VARCHAR(12),
     @nombreCompleto VARCHAR(120),
     @genero VARCHAR(30),
-    @idFranja INT,
+    @fechaNacimiento DATE,
     @idBarrio INT
 AS
 BEGIN
@@ -23,9 +23,21 @@ BEGIN
             RETURN;
         END;
 
-        IF NOT EXISTS (SELECT 1 FROM FranjaEtaria WHERE idFranja = @idFranja)
+        IF @fechaNacimiento IS NULL OR @fechaNacimiento > CAST(GETDATE() AS DATE)
         BEGIN
-            PRINT 'Error: la franja etaria indicada no existe';
+            PRINT 'Error: la fecha de nacimiento no es valida';
+            RETURN;
+        END;
+
+        -- La edad tiene que caer en alguna franja etaria cargada
+        DECLARE @hoy DATE = CAST(GETDATE() AS DATE);
+        DECLARE @edad INT = DATEDIFF(YEAR, @fechaNacimiento, @hoy)
+            - CASE WHEN DATEADD(YEAR, DATEDIFF(YEAR, @fechaNacimiento, @hoy), @fechaNacimiento) > @hoy THEN 1 ELSE 0 END;
+
+        IF NOT EXISTS (SELECT 1 FROM FranjaEtaria
+                       WHERE @edad >= edadMinima AND (edadMaxima IS NULL OR @edad <= edadMaxima))
+        BEGIN
+            PRINT 'Error: la edad del ciudadano no corresponde a ninguna franja etaria';
             RETURN;
         END;
 
@@ -36,11 +48,11 @@ BEGIN
         END;
 
         INSERT INTO Ciudadano
-        (dni, nombreCompleto, genero, idFranja, idBarrio)
+        (dni, nombreCompleto, genero, fechaNacimiento, idBarrio)
         VALUES
-        (@dni, @nombreCompleto, @genero, @idFranja, @idBarrio);
+        (@dni, @nombreCompleto, @genero, @fechaNacimiento, @idBarrio);
 
-        PRINT 'Ciudadan insertado correctamente';
+        PRINT 'Ciudadano insertado correctamente';
 
     END TRY
     BEGIN CATCH

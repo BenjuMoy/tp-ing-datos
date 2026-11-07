@@ -4,14 +4,14 @@ GO
 CREATE OR ALTER PROCEDURE sp_InsertarInteres
     @idInteres INT,
     @nombre VARCHAR(80),
-    @categoria VARCHAR(50)
+    @idCategoria INT
 AS
 BEGIN
     BEGIN TRY
 
-        IF @nombre = '' OR @categoria = ''
+        IF @nombre IS NULL OR @nombre = ''
         BEGIN
-            PRINT 'error: el nombre y la categoria no pueden estar vacios';
+            PRINT 'error: el nombre no puede estar vacio';
             RETURN;
         END;
 
@@ -21,8 +21,20 @@ BEGIN
             RETURN;
         END;
 
-        INSERT INTO Interes (idInteres, nombre, categoria)
-        VALUES (@idInteres, @nombre, @categoria);
+        IF NOT EXISTS (SELECT 1 FROM Categoria WHERE idCategoria = @idCategoria)
+        BEGIN
+            PRINT 'error: la categoria indicada no existe';
+            RETURN;
+        END;
+
+        IF EXISTS (SELECT 1 FROM Interes WHERE nombre = @nombre)
+        BEGIN
+            PRINT 'error: ya existe un interes con ese nombre';
+            RETURN;
+        END;
+
+        INSERT INTO Interes (idInteres, nombre, idCategoria)
+        VALUES (@idInteres, @nombre, @idCategoria);
 
         PRINT 'Interes insertado';
 
@@ -32,4 +44,4 @@ BEGIN
         PRINT 'Mensaje de error: ' + ERROR_MESSAGE();
         PRINT 'Codigo de error: ' + CAST(ERROR_NUMBER() AS VARCHAR);
     END CATCH;
-END;
+END;

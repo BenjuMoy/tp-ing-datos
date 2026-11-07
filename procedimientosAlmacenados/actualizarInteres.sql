@@ -4,7 +4,7 @@ GO
 CREATE OR ALTER PROCEDURE sp_ActualizarInteres
     @idInteres INT,
     @nombre VARCHAR(80),
-    @categoria VARCHAR(50)
+    @idCategoria INT
 AS
 BEGIN
     BEGIN TRY
@@ -15,9 +15,9 @@ BEGIN
             RETURN;
         END;
 
-        IF @nombre IS NULL OR @nombre = '' OR @categoria IS NULL OR @categoria = ''
+        IF @nombre IS NULL OR @nombre = ''
         BEGIN
-            PRINT 'error: el nombre y la categoria no pueden estar vacios';
+            PRINT 'error: el nombre no puede estar vacio';
             RETURN;
         END;
 
@@ -27,7 +27,13 @@ BEGIN
             RETURN;
         END;
 
-        UPDATE Interes SET nombre = @nombre,categoria = @categoria WHERE idInteres = @idInteres;
+        IF NOT EXISTS (SELECT 1 FROM Categoria WHERE idCategoria = @idCategoria)
+        BEGIN
+            PRINT 'error: la categoria indicada no existe';
+            RETURN;
+        END;
+
+        UPDATE Interes SET nombre = @nombre, idCategoria = @idCategoria WHERE idInteres = @idInteres;
         
         PRINT 'interes actualizado';
 
@@ -37,4 +43,4 @@ BEGIN
         PRINT 'Mensaje de error: ' + ERROR_MESSAGE();
         PRINT 'Codigo de error: ' + CAST(ERROR_NUMBER() AS VARCHAR);
     END CATCH;
-END;
+END;

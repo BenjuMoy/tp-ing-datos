@@ -28,15 +28,16 @@ ORDER BY p.totalPresupuesto DESC;
 SELECT
     fa.descripcion AS FranjaEtaria,
     i.nombre AS InteresReclamado,
-    i.categoria AS categoria,
+    cat.nombre AS categoria,
     COUNT(ci.idCiudadano) AS CantidadSolicitantes,
     CAST(AVG(CAST(ciI.nivelPrioridad AS DECIMAL(5,2))) AS DECIMAL(5,2)) AS PrioridadPromediada
 
 FROM FranjaEtaria Fa
-INNER JOIN Ciudadano ci ON Fa.idFranja = ci.idFranja
+INNER JOIN vw_Ciudadano ci ON Fa.idFranja = ci.idFranja
 INNER JOIN CiudadanoInteres ciI ON ci.idCiudadano = ciI.idCiudadano
 INNER JOIN Interes i ON ciI.idInteres = i.idInteres
-GROUP BY fa.idFranja, fa.descripcion, i.idInteres ,i.nombre, i.categoria
+INNER JOIN Categoria cat ON cat.idCategoria = i.idCategoria
+GROUP BY fa.idFranja, fa.descripcion, i.idInteres ,i.nombre, cat.nombre
 ORDER BY fa.descripcion, COUNT(ci.idCiudadano) DESC
 
 
@@ -48,7 +49,7 @@ SELECT
     COUNT(e.idEncuesta) AS CantidadVotantes,
     CAST(AVG(CAST(e.probabilidadVoto AS DECIMAL (5,2))) AS DECIMAL(5,2)) AS GradoDeConviccionPromedio
 
-FROM Ciudadano ci
+FROM vw_Ciudadano ci
 INNER JOIN FranjaEtaria fa ON ci.idFranja = fa.idFranja
 INNER JOIN vw_UltimaEncuesta e ON e.idCiudadano = ci.idCiudadano
 GROUP BY fa.idFranja, fa.descripcion, ci.genero, e.intencionVoto
@@ -88,15 +89,16 @@ ORDER BY CantidadIndecisos DESC
 --Consulta 7
 SELECT
     i.nombre AS Tema,
-    i.categoria AS Categoria,
+    cat.nombre AS Categoria,
     COUNT(ci.idCiudadano) AS VotantesFieles
 
 FROM vw_UltimaEncuesta e
 INNER JOIN Ciudadano ci ON ci.idCiudadano = e.idCiudadano
 INNER JOIN CiudadanoInteres ciI ON ciI.idCiudadano = ci.idCiudadano
 INNER JOIN Interes i ON ciI.idInteres = i.idInteres
+INNER JOIN Categoria cat ON cat.idCategoria = i.idCategoria
 WHERE e.esPartidoPropio = 1 AND e.probabilidadVoto >= 80 AND ciI.nivelPrioridad >= 4 
-GROUP BY i.nombre, i.categoria
+GROUP BY i.nombre, cat.nombre
 ORDER BY VotantesFieles DESC
 
 
@@ -104,7 +106,7 @@ ORDER BY VotantesFieles DESC
 SELECT
     e.intencionVoto AS Partido,
     i.nombre AS TematicaMasReclamada,
-    i.categoria AS Categoria,
+    cat.nombre AS Categoria,
     COUNT(ci.idCiudadano) AS CantidadCiudadanos,
    CAST(AVG(CAST(ciI.nivelPrioridad AS DECIMAL(5,2))) AS DECIMAL(5,2)) AS PromedioNivelPrioridad
 
@@ -112,7 +114,8 @@ FROM vw_UltimaEncuesta e
 INNER JOIN Ciudadano ci ON e.idCiudadano = ci.idCiudadano
 INNER JOIN CiudadanoInteres ciI ON ci.idCiudadano = ciI.idCiudadano
 INNER JOIN Interes i ON ciI.idInteres = i.idInteres
-GROUP BY e.intencionVoto, i.idInteres ,i.nombre, i.categoria
+INNER JOIN Categoria cat ON cat.idCategoria = i.idCategoria
+GROUP BY e.intencionVoto, i.idInteres ,i.nombre, cat.nombre
 ORDER BY e.intencionVoto ASC, CantidadCiudadanos DESC;
 
  
@@ -124,7 +127,7 @@ SELECT
 
 
 FROM FranjaEtaria fa
-INNER JOIN Ciudadano ci ON fa.idFranja = ci.idFranja
+INNER JOIN vw_Ciudadano ci ON fa.idFranja = ci.idFranja
 INNER JOIN vw_UltimaEncuesta e ON ci.idCiudadano = e.idCiudadano
 WHERE e.esIndeciso = 1
 GROUP BY fa.idFranja, fa.descripcion
@@ -133,11 +136,12 @@ ORDER BY VotantesACaptar DESC;
  --Consulta 10
 SELECT 
     i.nombre AS Tematica,
-    i.categoria AS Categoria,
+    cat.nombre AS Categoria,
     COUNT(ci_int.idCiudadano) AS TotalInteresadosCiudad,
     AVG(CAST(ci_int.nivelPrioridad AS DECIMAL(5,2))) AS PromedioNivelPrioridad
 
 FROM Interes i
+INNER JOIN Categoria cat ON cat.idCategoria = i.idCategoria
 JOIN CiudadanoInteres ci_int ON i.idInteres = ci_int.idInteres
-GROUP BY i.idInteres, i.nombre, i.categoria
+GROUP BY i.idInteres, i.nombre, cat.nombre
 ORDER BY TotalInteresadosCiudad DESC, PromedioNivelPrioridad DESC;

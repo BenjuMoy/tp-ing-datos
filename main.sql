@@ -18,9 +18,14 @@ CREATE TABLE Barrio (
    CONSTRAINT UQ_Barrio_Comuna_Nombre UNIQUE (idComuna, nombre)
 );
 
+-- Cada franja es un rango de edad. edadMaxima NULL = sin tope (ej: "Mas de 60").
+-- La franja de un ciudadano no se guarda: se calcula con su edad (ver vw_Ciudadano).
 CREATE TABLE FranjaEtaria (
    idFranja INT PRIMARY KEY,
-   descripcion VARCHAR(40) NOT NULL UNIQUE
+   descripcion VARCHAR(40) NOT NULL UNIQUE,
+   edadMinima INT NOT NULL,
+   edadMaxima INT NULL,
+   CONSTRAINT CK_Franja_Rango CHECK (edadMinima >= 16 AND (edadMaxima IS NULL OR edadMaxima >= edadMinima))
 );
 
 CREATE TABLE Ciudadano (
@@ -28,18 +33,25 @@ CREATE TABLE Ciudadano (
    dni VARCHAR(12) NOT NULL UNIQUE,
    nombreCompleto VARCHAR(120) NOT NULL,
    genero VARCHAR(30) NOT NULL,
-   idFranja INT NOT NULL,
+   fechaNacimiento DATE NOT NULL,
    idBarrio INT NOT NULL,
-   CONSTRAINT FK_Ciudadano_Franja FOREIGN KEY (idFranja)
-       REFERENCES FranjaEtaria(idFranja),
    CONSTRAINT FK_Ciudadano_Barrio FOREIGN KEY (idBarrio)
-       REFERENCES Barrio(idBarrio)
+       REFERENCES Barrio(idBarrio),
+   CONSTRAINT CK_Ciudadano_Genero
+       CHECK (genero IN ('Femenino', 'Masculino', 'No binario', 'Prefiere no decir'))
+);
+
+CREATE TABLE Categoria (
+   idCategoria INT PRIMARY KEY,
+   nombre VARCHAR(50) NOT NULL UNIQUE
 );
 
 CREATE TABLE Interes (
    idInteres INT PRIMARY KEY,
    nombre VARCHAR(80) NOT NULL UNIQUE,
-   categoria VARCHAR(50) NOT NULL
+   idCategoria INT NOT NULL,
+   CONSTRAINT FK_Interes_Categoria FOREIGN KEY (idCategoria)
+       REFERENCES Categoria(idCategoria)
 );
 
 CREATE TABLE CiudadanoInteres (
