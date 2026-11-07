@@ -80,8 +80,13 @@ SELECT
 FROM Comuna c
 INNER JOIN Barrio b ON c.idComuna = b.idComuna
 INNER JOIN Ciudadano ci ON b.idBarrio = ci.idBarrio
+<<<<<<< HEAD
 INNER JOIN vw_Encuesta e ON e.idCiudadano = ci.idCiudadano
 WHERE e.esIndeciso = 1
+=======
+INNER JOIN vw_UltimaEncuesta e ON e.idCiudadano = ci.idCiudadano
+WHERE e.esPartido = 0 OR e.probabilidadVoto<50
+>>>>>>> parent of 40bf75c (solucionado punto 8)
 GROUP BY c.idComuna, c.nombre
 ORDER BY CantidadIndecisos DESC
 
@@ -125,8 +130,13 @@ SELECT
 
 FROM FranjaEtaria fa
 INNER JOIN Ciudadano ci ON fa.idFranja = ci.idFranja
+<<<<<<< HEAD
 INNER JOIN vw_Encuesta e ON ci.idCiudadano = e.idCiudadano
 WHERE e.esIndeciso = 1
+=======
+INNER JOIN vw_UltimaEncuesta e ON ci.idCiudadano = e.idCiudadano
+WHERE e.intencionVoto = 'Indeciso' OR e.probabilidadVoto < 50
+>>>>>>> parent of 40bf75c (solucionado punto 8)
 GROUP BY fa.idFranja, fa.descripcion
 ORDER BY VotantesACaptar DESC;
 
