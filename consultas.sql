@@ -50,7 +50,7 @@ SELECT
 
 FROM Ciudadano ci
 INNER JOIN FranjaEtaria fa ON ci.idFranja = fa.idFranja
-INNER JOIN Encuesta e ON e.idCiudadano = ci.idCiudadano
+INNER JOIN vw_UltimaEncuesta e ON e.idCiudadano = ci.idCiudadano
 GROUP BY fa.idFranja, fa.descripcion, ci.genero, e.intencionVoto
 ORDER BY fa.descripcion ASC, ci.genero ASC, e.intencionVoto ASC
 
@@ -64,7 +64,7 @@ SELECT
     
 
 FROM Ciudadano ci
-INNER JOIN Encuesta e ON ci.idCiudadano = e.idCiudadano
+INNER JOIN vw_UltimaEncuesta e ON ci.idCiudadano = e.idCiudadano
 INNER JOIN Barrio b ON b.idBarrio = ci.idBarrio
 INNER JOIN Comuna c ON c.idComuna = b.idComuna
 GROUP BY c.idComuna, c.nombre, e.intencionVoto
@@ -80,7 +80,7 @@ SELECT
 FROM Comuna c
 INNER JOIN Barrio b ON c.idComuna = b.idComuna
 INNER JOIN Ciudadano ci ON b.idBarrio = ci.idBarrio
-INNER JOIN Encuesta e ON e.idCiudadano = ci.idCiudadano
+INNER JOIN vw_UltimaEncuesta e ON e.idCiudadano = ci.idCiudadano
 WHERE e.intencionVoto IN ('Indeciso', 'Voto en Blanco') OR e.probabilidadVoto<50
 GROUP BY c.idComuna, c.nombre
 ORDER BY CantidadIndecisos DESC
@@ -91,7 +91,7 @@ SELECT
     i.categoria AS Categoria,
     COUNT(ci.idCiudadano) AS VotantesFieles
 
-FROM Encuesta e
+FROM vw_UltimaEncuesta e
 INNER JOIN Ciudadano ci ON ci.idCiudadano = e.idCiudadano
 INNER JOIN CiudadanoInteres ciI ON ciI.idCiudadano = ci.idCiudadano
 INNER JOIN Interes i ON ciI.idInteres = i.idInteres
@@ -108,7 +108,7 @@ SELECT
     COUNT(ci.idCiudadano) AS CantidadCiudadanos,
    CAST(AVG(CAST(ciI.nivelPrioridad AS DECIMAL(5,2))) AS DECIMAL(5,2)) AS PromedioNivelPrioridad
 
-FROM Encuesta e
+FROM vw_UltimaEncuesta e
 INNER JOIN Ciudadano ci ON e.idCiudadano = ci.idCiudadano
 INNER JOIN CiudadanoInteres ciI ON ci.idCiudadano = ciI.idCiudadano
 INNER JOIN Interes i ON ciI.idInteres = i.idInteres
@@ -125,7 +125,7 @@ SELECT
 
 FROM FranjaEtaria fa
 INNER JOIN Ciudadano ci ON fa.idFranja = ci.idFranja
-INNER JOIN Encuesta e ON ci.idCiudadano = e.idCiudadano
+INNER JOIN vw_UltimaEncuesta e ON ci.idCiudadano = e.idCiudadano
 WHERE e.intencionVoto = 'Indeciso' OR e.probabilidadVoto < 50
 GROUP BY fa.idFranja, fa.descripcion
 ORDER BY VotantesACaptar DESC;
