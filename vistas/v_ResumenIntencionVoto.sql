@@ -4,6 +4,7 @@ SELECT
     co.nombre AS nombreComuna,
     f.descripcion AS FranjaEtaria,
     e.intencionVoto,
+    e.esPartidoPropio,
     COUNT (e.idEncuesta) AS totalEncuestas,
     AVG(e.probabilidadVoto) AS promedioProbabilidad
 
@@ -16,4 +17,5 @@ GROUP BY
     co.idComuna,
     co.nombre,
     f.descripcion,
-    e.intencionVoto
+    e.intencionVoto,
+    e.esPartidoPropio

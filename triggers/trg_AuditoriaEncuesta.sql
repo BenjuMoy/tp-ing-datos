@@ -9,12 +9,14 @@ BEGIN
         i.idEncuesta,
         SYSDATETIME(),
         'UPDATE',
-        CONCAT('Intencion: ', d.intencionVoto, ' - Probabilidad: ', d.probabilidadVoto),
-        CONCAT('Intencion: ', i.intencionVoto, ' - Probabilidad: ', i.probabilidadVoto)
+        CONCAT('Intencion: ', od.nombre, ' - Probabilidad: ', d.probabilidadVoto),
+        CONCAT('Intencion: ', oi.nombre, ' - Probabilidad: ', i.probabilidadVoto)
 
 
     FROM inserted i
-    INNER JOIN deleted d ON i.idEncuesta = d.idEncuesta;
+    INNER JOIN deleted d ON i.idEncuesta = d.idEncuesta
+    INNER JOIN OpcionVoto oi ON oi.idOpcionVoto = i.idOpcionVoto
+    INNER JOIN OpcionVoto od ON od.idOpcionVoto = d.idOpcionVoto;
 END;
 GO
     

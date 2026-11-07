@@ -19,7 +19,7 @@ SELECT
     COALESCE(CAST(SUM(v.totalEncuestas * v.promedioProbabilidad) / SUM(v.totalEncuestas) AS DECIMAL(5,2)), 0.00) AS GradoDeConviccionPromedio
     
 FROM v_ContrastarPresupuestoComuna p
-LEFT JOIN vw_ResumenIntencionVoto v ON p.idComuna = v.idComuna AND v.intencionVoto = 'Alianza Innovadora'
+LEFT JOIN vw_ResumenIntencionVoto v ON p.idComuna = v.idComuna AND v.esPartidoPropio = 1
 GROUP BY p.idComuna, p.nombre, p.totalPresupuesto, p.TotalAcciones
 ORDER BY p.totalPresupuesto DESC;
 
@@ -81,7 +81,7 @@ FROM Comuna c
 INNER JOIN Barrio b ON c.idComuna = b.idComuna
 INNER JOIN Ciudadano ci ON b.idBarrio = ci.idBarrio
 INNER JOIN vw_UltimaEncuesta e ON e.idCiudadano = ci.idCiudadano
-WHERE e.intencionVoto IN ('Indeciso', 'Voto en Blanco') OR e.probabilidadVoto<50
+WHERE e.esPartido = 0 OR e.probabilidadVoto<50
 GROUP BY c.idComuna, c.nombre
 ORDER BY CantidadIndecisos DESC
 
@@ -95,7 +95,7 @@ FROM vw_UltimaEncuesta e
 INNER JOIN Ciudadano ci ON ci.idCiudadano = e.idCiudadano
 INNER JOIN CiudadanoInteres ciI ON ciI.idCiudadano = ci.idCiudadano
 INNER JOIN Interes i ON ciI.idInteres = i.idInteres
-WHERE e.intencionVoto = 'Alianza Innovadora' AND e.probabilidadVoto >= 80 AND ciI.nivelPrioridad >= 4 
+WHERE e.esPartidoPropio = 1 AND e.probabilidadVoto >= 80 AND ciI.nivelPrioridad >= 4 
 GROUP BY i.nombre, i.categoria
 ORDER BY VotantesFieles DESC
 

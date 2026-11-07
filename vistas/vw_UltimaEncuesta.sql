@@ -3,11 +3,14 @@
 -- Debe crearse antes que las demas vistas, la funcion y las consultas.
 CREATE OR ALTER VIEW vw_UltimaEncuesta AS
 SELECT
-    idEncuesta,
-    idCiudadano,
-    fechaEncuesta,
-    intencionVoto,
-    probabilidadVoto
+    t.idEncuesta,
+    t.idCiudadano,
+    t.fechaEncuesta,
+    t.idOpcionVoto,
+    o.nombre AS intencionVoto,
+    o.esPartido,
+    o.esPartidoPropio,
+    t.probabilidadVoto
 FROM (
     SELECT
         e.*,
@@ -17,4 +20,5 @@ FROM (
         ) AS nro
     FROM Encuesta e
 ) t
-WHERE nro = 1
+INNER JOIN OpcionVoto o ON o.idOpcionVoto = t.idOpcionVoto
+WHERE t.nro = 1
