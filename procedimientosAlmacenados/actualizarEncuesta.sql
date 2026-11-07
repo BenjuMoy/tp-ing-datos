@@ -5,7 +5,7 @@ CREATE OR ALTER PROCEDURE sp_ActualizarEncuesta
     @idEncuesta INT,
     @idCiudadano INT,
     @fechaEncuesta DATE,
-    @idOpcionVoto INT,
+    @intencionVoto VARCHAR(80),
     @probabilidadVoto DECIMAL(5,2)
 AS
 BEGIN
@@ -17,9 +17,9 @@ BEGIN
             RETURN;
         END;
 
-        IF NOT EXISTS (SELECT 1 FROM OpcionVoto WHERE idOpcionVoto = @idOpcionVoto)
+        IF @intencionVoto IS NULL OR @intencionVoto = ''
         BEGIN
-            PRINT 'error: la opcion de voto indicada no existe';
+            PRINT 'error: la intencion de voto no puede estar vacia';
             RETURN;
         END;
 
@@ -35,8 +35,14 @@ BEGIN
             RETURN;
         END;
 
+        IF EXISTS (SELECT 1 FROM Encuesta WHERE idCiudadano = @idCiudadano AND idEncuesta <> @idEncuesta)
+        BEGIN
+            PRINT 'error: ese ciudadano ya tiene otra encuesta registrada';
+            RETURN;
+        END;
+
         UPDATE Encuesta
-        SET idCiudadano = @idCiudadano,fechaEncuesta = @fechaEncuesta,idOpcionVoto = @idOpcionVoto,probabilidadVoto = @probabilidadVoto
+        SET idCiudadano = @idCiudadano,fechaEncuesta = @fechaEncuesta,intencionVoto = @intencionVoto,probabilidadVoto = @probabilidadVoto
         WHERE idEncuesta = @idEncuesta;
 
         PRINT 'encuesta actualizada';

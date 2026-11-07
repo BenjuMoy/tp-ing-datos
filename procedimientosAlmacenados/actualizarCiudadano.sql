@@ -6,7 +6,7 @@ CREATE OR ALTER PROCEDURE sp_ActualizarCiudadano
     @dni VARCHAR(12),
     @nombreCompleto VARCHAR(120),
     @genero VARCHAR(30),
-    @fechaNacimiento DATE,
+    @idFranja INT,
     @idBarrio INT
 AS
 BEGIN
@@ -33,21 +33,9 @@ BEGIN
             RETURN;
         END;
 
-        IF @fechaNacimiento IS NULL OR @fechaNacimiento > CAST(GETDATE() AS DATE)
+        IF NOT EXISTS (SELECT 1 FROM FranjaEtaria WHERE idFranja = @idFranja)
         BEGIN
-            PRINT 'error: la fecha de nacimiento no es valida';
-            RETURN;
-        END;
-
-        -- La edad tiene que caer en alguna franja etaria cargada
-        DECLARE @hoy DATE = CAST(GETDATE() AS DATE);
-        DECLARE @edad INT = DATEDIFF(YEAR, @fechaNacimiento, @hoy)
-            - CASE WHEN DATEADD(YEAR, DATEDIFF(YEAR, @fechaNacimiento, @hoy), @fechaNacimiento) > @hoy THEN 1 ELSE 0 END;
-
-        IF NOT EXISTS (SELECT 1 FROM FranjaEtaria
-                       WHERE @edad >= edadMinima AND (edadMaxima IS NULL OR @edad <= edadMaxima))
-        BEGIN
-            PRINT 'error: la edad del ciudadano no corresponde a ninguna franja etaria';
+            PRINT 'error: la franja etaria indicada no existe';
             RETURN;
         END;
 
@@ -58,7 +46,7 @@ BEGIN
         END;
 
         UPDATE Ciudadano
-        SET dni = @dni, nombreCompleto = @nombreCompleto, genero = @genero, fechaNacimiento = @fechaNacimiento, idBarrio = @idBarrio
+        SET dni = @dni, nombreCompleto = @nombreCompleto,genero = @genero,idFranja = @idFranja,idBarrio = @idBarrio
         WHERE idCiudadano = @idCiudadano;
 
         PRINT 'ciudadano actualizado';
